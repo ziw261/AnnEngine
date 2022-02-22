@@ -2,73 +2,86 @@
 #include "EngineMinimal.h"
 #include "EngineFactory.h"
 
+int Init(FEngine* engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
+{
+	int returnValue = engine->PreInit(
+#if defined(_WIN32)
+		FWinMainCommandParameters(hInstance, prevInstance, cmdLine, showCmd)
+#endif
+	);
+
+
+	if (returnValue != 0)
+	{
+		Engine_Log_Error("[%i]Engine pre-initialization error.", returnValue);
+		return returnValue;
+	}
+
+
+	returnValue = engine->Init();
+	if (returnValue != 0)
+	{
+		Engine_Log_Error("[%i]Engine initialization error.", returnValue);
+		return returnValue;
+	}
+
+	returnValue = engine->PostInit();
+	if (returnValue != 0)
+	{
+		Engine_Log_Error("[%i]Engine post-initialization error.", returnValue);
+		return returnValue;
+	}
+
+	return returnValue;
+}
+
+void Tick(FEngine* engine)
+{
+
+}
+
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
 {
-	int ReturnValue = 0;
+	int returnValue = 0;
 
-	if (FEngine* Engine = FEngineFactory::CreateEngine())
+	if (FEngine* engine = FEngineFactory::CreateEngine())
 	{
-		ReturnValue = Engine->PreInit(
-#if defined(_WIN32)
-			FWinMainCommandParameters(hInstance, prevInstance, cmdLine, showCmd)
-#endif
-		);
-		
-		
-		if (ReturnValue != 0)
-		{
-			Engine_Log_Error("[%i]Engine pre-initialization error.", ReturnValue);
-			return ReturnValue;
-		}
-
-		
-		ReturnValue = Engine->Init();
-		if (ReturnValue != 0)
-		{
-			Engine_Log_Error("[%i]Engine initialization error.", ReturnValue);
-			return ReturnValue;
-		}
-
-		ReturnValue = Engine->PostInit();
-		if (ReturnValue != 0)
-		{
-			Engine_Log_Error("[%i]Engine post-initialization error.", ReturnValue);
-			return ReturnValue;
-		}
+		returnValue = Init(engine, hInstance, prevInstance, cmdLine, showCmd);
 
 		while (true)
 		{
-			Engine->Tick();
+			engine->Tick();
 		}
 
-		ReturnValue = Engine->PreExit();
-		if (ReturnValue != 0)
+		returnValue = engine->PreExit();
+		if (returnValue != 0)
 		{
-			Engine_Log_Error("[%i]Engine pre-exit failed.", ReturnValue);
-			return ReturnValue;
+			Engine_Log_Error("[%i]Engine pre-exit failed.", returnValue);
+			return returnValue;
 		}
 
-		ReturnValue = Engine->Exit();
-		if (ReturnValue != 0)
+		returnValue = engine->Exit();
+		if (returnValue != 0)
 		{
-			Engine_Log_Error("[%i]Engine exit failed.", ReturnValue);
-			return ReturnValue;
+			Engine_Log_Error("[%i]Engine exit failed.", returnValue);
+			return returnValue;
 		}
 
-		ReturnValue = Engine->PostExit();
-		if (ReturnValue != 0)
+		returnValue = engine->PostExit();
+		if (returnValue != 0)
 		{
-			Engine_Log_Error("[%i]Engine post-exit failed.", ReturnValue);
-			return ReturnValue;
+			Engine_Log_Error("[%i]Engine post-exit failed.", returnValue);
+			return returnValue;
 		}
 
-		ReturnValue = 0;
+		returnValue = 0;
 	}
 	else
 	{
-		ReturnValue = 1;
+		returnValue = 1;
 	}
 
-	Engine_Log("[%i]Engine has existed.", ReturnValue);
-	return ReturnValue;
+	Engine_Log("[%i]Engine has existed.", returnValue);
+	return returnValue;
 }

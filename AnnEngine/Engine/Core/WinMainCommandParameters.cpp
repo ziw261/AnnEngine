@@ -1,7 +1,7 @@
 #include "WinMainCommandParameters.h"
 
-FWinMainCommandParameters::FWinMainCommandParameters(HINSTANCE InhInstance, HINSTANCE InprevInstance, PSTR IncmdLine, int InshowCmd)
-	:HInstance(InhInstance), PrevInstance(InprevInstance), CmdLine(IncmdLine), ShowCmd(InshowCmd)
+FWinMainCommandParameters::FWinMainCommandParameters(HINSTANCE inhInstance, HINSTANCE inprevInstance, PSTR incmdLine, int inshowCmd)
+	:hInstance(inhInstance), prevInstance(inprevInstance), cmdLine(incmdLine), showCmd(inshowCmd)
 {
 
 }
