@@ -1,3 +1,4 @@
+#include "Debug/Log/SimpleLog.h"
 #include "EngineMinimal.h"
 #include "EngineFactory.h"
 
@@ -16,6 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		
 		if (ReturnValue != 0)
 		{
+			Engine_Log_Error("[%i]Engine pre-initialization error.", ReturnValue);
 			return ReturnValue;
 		}
 
@@ -23,12 +25,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		ReturnValue = Engine->Init();
 		if (ReturnValue != 0)
 		{
+			Engine_Log_Error("[%i]Engine initialization error.", ReturnValue);
 			return ReturnValue;
 		}
 
 		ReturnValue = Engine->PostInit();
 		if (ReturnValue != 0)
 		{
+			Engine_Log_Error("[%i]Engine post-initialization error.", ReturnValue);
 			return ReturnValue;
 		}
 
@@ -40,18 +44,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		ReturnValue = Engine->PreExit();
 		if (ReturnValue != 0)
 		{
+			Engine_Log_Error("[%i]Engine pre-exit failed.", ReturnValue);
 			return ReturnValue;
 		}
 
 		ReturnValue = Engine->Exit();
 		if (ReturnValue != 0)
 		{
+			Engine_Log_Error("[%i]Engine exit failed.", ReturnValue);
 			return ReturnValue;
 		}
 
 		ReturnValue = Engine->PostExit();
 		if (ReturnValue != 0)
 		{
+			Engine_Log_Error("[%i]Engine post-exit failed.", ReturnValue);
 			return ReturnValue;
 		}
 
@@ -62,5 +69,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		ReturnValue = 1;
 	}
 
+	Engine_Log("[%i]Engine has existed.", ReturnValue);
 	return ReturnValue;
 }

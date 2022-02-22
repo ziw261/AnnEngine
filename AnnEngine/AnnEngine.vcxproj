@@ -59,6 +59,7 @@
   <ItemGroup>
     <ClInclude Include="Engine\Core\Engine.h" />
     <ClInclude Include="Engine\Core\WinMainCommandParameters.h" />
+    <ClInclude Include="Engine\Debug\Log\SimpleLog.h" />
     <ClInclude Include="Engine\EngineFactory.h" />
     <ClInclude Include="Engine\EngineMinimal.h" />
     <ClInclude Include="Engine\Platform\Windows\WindowsEngine.h" />
