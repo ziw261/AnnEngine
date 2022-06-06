@@ -10,13 +10,11 @@ int Init(FEngine* engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdL
 #endif
 	);
 
-
 	if (returnValue != 0)
 	{
 		Engine_Log_Error("[%i]Engine pre-initialization error.", returnValue);
 		return returnValue;
 	}
-
 
 	returnValue = engine->Init();
 	if (returnValue != 0)
@@ -37,7 +35,7 @@ int Init(FEngine* engine, HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdL
 
 void Tick(FEngine* engine)
 {
-
+	engine->Tick();
 }
 
 
@@ -51,7 +49,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 		while (true)
 		{
-			engine->Tick();
+			Tick(engine);
 		}
 
 		returnValue = engine->PreExit();
