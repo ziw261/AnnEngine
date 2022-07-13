@@ -1,4 +1,5 @@
 #include "WindowsEngine.h"
+#include "../../Debug/EngineDebug.h"
 
 #if defined(_WIN32)
 #include "WindowsMessageProcessing.h"
@@ -11,6 +12,11 @@ int FWindowsEngine::PreInit(FWinMainCommandParameters inParameters)
 	Engine_Log("Log Init.");
 
 	if (InitWindows(inParameters))
+	{
+
+	}
+
+	if (InitDirect3D())
 	{
 
 	}
@@ -111,6 +117,45 @@ bool FWindowsEngine::InitWindows(FWinMainCommandParameters inParameters)
 	Engine_Log("Application window initialization complete.");
 
 	return true;
+}
+
+bool FWindowsEngine::InitDirect3D()
+{
+	//HRESULT
+	//S_OK				0x00000000
+	//E_UNEXPECTED		0x8000FFFF
+	//E_NOTIMPL			0x8007000E
+	//E_INVALIDARG		0x80070057
+	//E_NOINTERFACE		0x80004002
+	//E_POINTER			0x80004003
+	//E_HANDLE			0x80070006
+	//E_ABORT			0x80004004
+	//E_FAIL			0x80004005
+	//E_ACCESSDENIED	0x80070005
+	ANALYSIS_HRESULT(CreateDXGIFactory1(IID_PPV_ARGS(&DXGIFactory)));
+
+	HRESULT D3dDeviceResult = D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&D3dDevice));
+	if (FAILED(D3dDeviceResult))
+	{
+		//warp
+		ComPtr<IDXGIAdapter> WARPAdapter;
+		ANALYSIS_HRESULT(DXGIFactory->EnumWarpAdapter(IID_PPV_ARGS(&WARPAdapter)));
+
+		ANALYSIS_HRESULT(D3D12CreateDevice(WARPAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&D3dDevice)));
+	}
+
+	//D3D12_FENCE_FLAG_NONE
+	//D3D11_FENCE_FLAG_SHARED
+	//D3D11_FENCE_FALG_SHARED_CROSS_ADAPTER
+	/*
+	Fence->SetEventOnCompletion
+	Queue->Signal
+	wait
+	*/
+
+	ANALYSIS_HRESULT(D3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&Fence)));
+
+	return false;
 }
 
 #endif
